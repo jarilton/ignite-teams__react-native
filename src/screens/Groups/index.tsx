@@ -1,9 +1,9 @@
-import { Container, Title } from './styles';
+import * as S from './styles';
 
 export function Groups() {
   return (
-    <Container>
-      <Title>Olá, React Native</Title>
-    </Container>
+    <S.Container>
+      <S.Title>Olá, React Native</S.Title>
+    </S.Container>
   );
 }
