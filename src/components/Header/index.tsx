@@ -1,11 +1,19 @@
-import { Container, Logo } from "./styles";
-import LogoImg from "@assets/logo.png"
+import * as S from "./styles";
+import LogoImg from "@assets/logo.png";
 
-export function Header() {
+type IProps = {
+  ShowBackButton?: boolean;
+};
+
+export function Header({ ShowBackButton = false }: IProps) {
   return (
-    <Container>
-      <Logo source={LogoImg}/>
-    </Container>
-
-  )
+    <S.Container>
+      {ShowBackButton && (
+        <S.BackButton>
+          <S.BackIcon />
+        </S.BackButton>
+      )}
+      <S.Logo source={LogoImg} />
+    </S.Container>
+  );
 }
