@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { FlatList } from "react-native";
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
@@ -6,6 +8,11 @@ import { Input } from "@components/Input";
 import * as S from "./styles";
 
 export function Players() {
+  const [team, setTeam] = useState("Time A");
+  const [players, setPlayers] = useState([]);
+
+  const dataFilter = ["Time A", "Time B"];
+
   return (
     <S.Container>
       <Header ShowBackButton />
@@ -19,7 +26,22 @@ export function Players() {
         <ButtonIcon icon="add" />
       </S.Form>
 
-      <Filter title="Time A" isActive />
+      <S.HeaderList>
+        <FlatList
+          data={dataFilter}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <Filter
+              title={item}
+              isActive={item === team}
+              onPress={() => setTeam(item)}
+            />
+          )}
+          horizontal
+        />
+
+        <S.NumberPlayers>{players.length}</S.NumberPlayers>
+      </S.HeaderList>
     </S.Container>
   );
 }
