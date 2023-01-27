@@ -9,7 +9,7 @@ export function NewGroup() {
   const navigation = useNavigation();
 
   function handlePlayers() {
-    navigation.navigate("Players", { group: "new" });
+    navigation.navigate("players", { group: "Rocket" });
   }
 
   return (

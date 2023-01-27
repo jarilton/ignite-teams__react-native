@@ -10,7 +10,7 @@ export function Header({ ShowBackButton = false }: IProps) {
   const navigation = useNavigation();
 
   function handleBack() {
-    navigation.goBack();
+    navigation.navigate("groups");
   }
 
   return (
