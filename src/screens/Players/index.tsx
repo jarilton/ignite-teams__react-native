@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FlatList } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
@@ -10,20 +11,25 @@ import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
 import * as S from "./styles";
 
+type IRouteParams = {
+  group: string;
+};
+
 export function Players() {
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState([]);
 
   const dataFilter = ["Time A", "Time B"];
 
+  const router = useRoute();
+
+  const { group } = router?.params as IRouteParams;
+
   return (
     <S.Container>
       <Header ShowBackButton />
 
-      <Highlight
-        title="Nome da turma"
-        subtitle="Adicione a galera e separe os times"
-      />
+      <Highlight title={group} subtitle="Adicione a galera e separe os times" />
       <S.Form>
         <Input placeholder="Nome da pessoa" autoCorrect={false} />
         <ButtonIcon icon="add" />
