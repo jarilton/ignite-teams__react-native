@@ -5,7 +5,7 @@ import { Highlight } from "@components/Highlight";
 import { ListEmpty } from "@components/ListEmpty";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { groupsGetAll } from "@storage/group/groupsGetAll";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FlatList } from "react-native";
 import * as S from "./styles";
 
