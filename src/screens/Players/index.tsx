@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { ButtonIcon } from "@components/ButtonIcon";
@@ -12,7 +12,8 @@ import { Button } from "@components/Button";
 import * as S from "./styles";
 import { AppError } from "@utils/AppError";
 import { playerAddByGroup } from "@storage/player/playerAddByGroup";
-import { playerGetByGroup } from "../../storage/player/playerGetByGroup";
+import { playerGetFilterGroup } from "@storage/player/playergetFilterGroup";
+import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 
 type IRouteParams = {
   group: string;
@@ -20,7 +21,7 @@ type IRouteParams = {
 
 export function Players() {
   const [team, setTeam] = useState("Time A");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState("");
 
   const dataFilter = ["Time A", "Time B"];
@@ -41,9 +42,7 @@ export function Players() {
 
     try {
       await playerAddByGroup(newPlayer, group);
-      const players = await playerGetByGroup(group);
-
-      console.log("Players", players);
+      fetchPlayersTeam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Nova pessoa", error.message);
@@ -52,6 +51,21 @@ export function Players() {
       }
     }
   }
+
+  async function fetchPlayersTeam() {
+    try {
+      const playersTeam = await playerGetFilterGroup(group, team);
+
+      setPlayers(playersTeam);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Nova pessoa", "Não foi possível carregar as pessoas");
+    }
+  }
+
+  useEffect(() => {
+    fetchPlayersTeam();
+  }, [team]);
 
   return (
     <S.Container>
@@ -86,9 +100,9 @@ export function Players() {
 
       <FlatList
         data={players}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard name={item} onRemove={() => {}} />
+          <PlayerCard name={item.name} onRemove={() => {}} />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas nesse time." />
