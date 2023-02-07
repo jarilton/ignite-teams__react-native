@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Alert, FlatList, TextInput } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
@@ -15,6 +15,7 @@ import { playerAddByGroup } from "@storage/player/playerAddByGroup";
 import { playerGetFilterGroup } from "@storage/player/playergetFilterGroup";
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
+import { groupRemoveByName } from "@storage/group/groupRemoveByName";
 
 type IRouteParams = {
   group: string;
@@ -28,6 +29,7 @@ export function Players() {
   const dataFilter = ["Time A", "Time B"];
 
   const router = useRoute();
+  const navigation = useNavigation();
 
   const { group } = router?.params as IRouteParams;
 
@@ -81,6 +83,32 @@ export function Players() {
         Alert.alert("Remover pessoa", "Não foi possível remover a pessoa");
       }
     }
+  }
+
+  async function groupRemove() {
+    try {
+      await groupRemoveByName(group);
+      navigation.navigate("groups");
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert("Remover grupo", error.message);
+      } else {
+        Alert.alert("Remover grupo", "Não foi possível remover o grupo");
+      }
+    }
+  }
+
+  async function handleRemoveGroup() {
+    Alert.alert("Remover grupo", "Deseja remover o grupo?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        onPress: () => groupRemove(),
+      },
+    ]);
   }
 
   useEffect(() => {
@@ -141,7 +169,11 @@ export function Players() {
         ]}
       />
 
-      <Button title="Remover Turma" type="secondary" />
+      <Button
+        title="Remover Turma"
+        type="secondary"
+        onPress={handleRemoveGroup}
+      />
     </S.Container>
   );
 }
