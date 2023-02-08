@@ -9,6 +9,7 @@ import { Input } from "@components/Input";
 import { PlayerCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
+import { Loading } from "@components/Loading";
 import * as S from "./styles";
 import { AppError } from "@utils/AppError";
 import { playerAddByGroup } from "@storage/player/playerAddByGroup";
@@ -25,6 +26,7 @@ export function Players() {
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const dataFilter = ["Time A", "Time B"];
 
@@ -63,9 +65,11 @@ export function Players() {
 
   async function fetchPlayersTeam() {
     try {
+      setIsLoading(true);
       const playersTeam = await playerGetFilterGroup(group, team);
 
       setPlayers(playersTeam);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
       Alert.alert("Nova pessoa", "Não foi possível carregar as pessoas");
@@ -99,7 +103,7 @@ export function Players() {
   }
 
   async function handleRemoveGroup() {
-    Alert.alert("Remover grupo", "Deseja remover o grupo?", [
+    Alert.alert("Remover grupo", "Deseja realmente remover a turma?", [
       {
         text: "Não",
         style: "cancel",
@@ -134,18 +138,22 @@ export function Players() {
       </S.Form>
 
       <S.HeaderList>
-        <FlatList
-          data={dataFilter}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <Filter
-              title={item}
-              isActive={item === team}
-              onPress={() => setTeam(item)}
-            />
-          )}
-          horizontal
-        />
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={dataFilter}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <Filter
+                title={item}
+                isActive={item === team}
+                onPress={() => setTeam(item)}
+              />
+            )}
+            horizontal
+          />
+        )}
 
         <S.NumberPlayers>{players.length}</S.NumberPlayers>
       </S.HeaderList>
@@ -170,7 +178,7 @@ export function Players() {
       />
 
       <Button
-        title="Remover Turma"
+        title="Remover turma"
         type="secondary"
         onPress={handleRemoveGroup}
       />
