@@ -69,10 +69,11 @@ export function Players() {
       const playersTeam = await playerGetFilterGroup(group, team);
 
       setPlayers(playersTeam);
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
       Alert.alert("Nova pessoa", "Não foi possível carregar as pessoas");
+    } finally {
+      setIsLoading(false);
     }
   }
 
